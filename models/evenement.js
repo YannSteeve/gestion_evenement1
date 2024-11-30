@@ -1,14 +1,21 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../config/db.js';
 
+// Définition du modèle `Evenement`
 const Evenement = sequelize.define('Evenement', {
   nom: {
     type: DataTypes.STRING,
     allowNull: false,
+    validate: {
+      notEmpty: true,
+    },
   },
   date: {
-    type: DataTypes.DATE,
+    type: DataTypes.DATEONLY,
     allowNull: false,
+    validate: {
+      isDate: true,
+    },
   },
   description: {
     type: DataTypes.TEXT,
@@ -18,16 +25,6 @@ const Evenement = sequelize.define('Evenement', {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  createur_id: { // Ajout du champ pour le créateur
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: 'Utilisateur', // Nom de la table des utilisateurs
-      key: 'id',
-    }
-  }
-}, {
-  timestamps: true, // Ajoute createdAt et updatedAt
 });
 
 export default Evenement;

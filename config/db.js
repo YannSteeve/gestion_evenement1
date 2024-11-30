@@ -1,20 +1,25 @@
-import jwt from 'jsonwebtoken';
 
-function auth(req, res, next) {
-  const token = req.headers['authorization'];
+import { Sequelize } from 'sequelize';
+import dotenv from 'dotenv';
 
-  if (!token) {
-    return res.sendStatus(401); // Non autorisé si pas de token
+// Chargez les variables d'environnement
+dotenv.config();
+
+const sequelize = new Sequelize(process.env.DB_DATABASE, process.env.DB_USER, process.env.DB_PASSWORD, {
+  host: process.env.DB_HOST,
+  dialect: 'mysql',
+});
+
+const testConnection = async () => {
+  try {
+    await sequelize.authenticate();
+    console.log('Connection has been established successfully.');
+  } catch (error) {
+    console.error('Unable to connect to the database:', error);
   }
+};
 
-  jwt.verify(token.split(' ')[1], process.env.JWT_SECRET, (err, user) => {
-    if (err) {
-      return res.sendStatus(403); // Interdit si le token est invalide
-    }
+testConnection();
 
-    req.user = user; // Ajout des informations utilisateur à la requête
-    next();
-  });
-}
-
-export default auth;
+// Exportez sequelize pour l'utiliser ailleurs
+export default sequelize;

@@ -1,6 +1,8 @@
+// utilisateur.js
 import { DataTypes } from 'sequelize';
-import sequelize from '../config/db';
+import sequelize from '../config/db.js';
 
+// Utilisez l'instance de sequelize pour définir le modèle
 const Utilisateur = sequelize.define('Utilisateur', {
   nom: {
     type: DataTypes.STRING,
