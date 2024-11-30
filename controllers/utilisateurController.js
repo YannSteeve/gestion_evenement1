@@ -1,94 +1,34 @@
-import Evenement from '../models/evenement';
-import transporter from '../config/nodemailer';
-import { Op } from 'sequelize';
+import Utilisateur from '../models/utilisateur';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 
-// Créer un nouvel événement (requiert authentification)
-export const createEvenement = async (req, res) => {
-  const { nom, date, description, lieu } = req.body;
+// Inscription d'un nouvel utilisateur
+export const inscription = async (req, res) => {
+  const { nom, email, mot_de_passe } = req.body;
 
   try {
-    const evenement = await Evenement.create({ nom, date, description, lieu });
-
-    // Envoyer une notification par e-mail à l'utilisateur créateur de l'événement.
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: req.user.email,
-      subject: 'Nouvel Événement Créé',
-      text: `L'événement "${nom}" a été créé avec succès. Vous pouvez le consulter ici : http://localhost:${process.env.PORT}/api/evenements/${evenement.id}`,
-    });
-
-    res.status(201).json(evenement);
+    const hashedPassword = await bcrypt.hash(mot_de_passe, 10);
+    const utilisateur = await Utilisateur.create({ nom, email, mot_de_passe: hashedPassword });
+    res.status(201).json({ id: utilisateur.id });
   } catch (error) {
-    res.status(500).json({ message: 'Erreur lors de la création de l\'événement' });
+    res.status(500).json({ message: 'Erreur lors de l\'inscription' });
   }
 };
 
-// Récupérer tous les événements avec possibilité de filtrage.
-export const getAllEvenements = async (req, res) => {
-  const { nom, date } = req.query; // Récupérer les paramètres de requête
-
-  const where = {};
-  
-  if (nom) {
-    where.nom = { [Op.like]: `%${nom}%` }; // Filtrage par nom.
-  }
-  
-  if (date) {
-    where.date = date; // Filtrage par date.
-  }
+// Authentification d'un utilisateur
+export const login = async (req, res) => {
+  const { email, mot_de_passe } = req.body;
 
   try {
-    const evenements = await Evenement.findAll({ where });
-    res.json(evenements);
+    const utilisateur = await Utilisateur.findOne({ where: { email } });
+
+    if (utilisateur && await bcrypt.compare(mot_de_passe, utilisateur.mot_de_passe)) {
+      const token = jwt.sign({ id: utilisateur.id }, process.env.JWT_SECRET);
+      res.json({ token });
+    } else {
+      res.status(401).json({ message: 'Email ou mot de passe incorrect' });
+    }
   } catch (error) {
-    res.status(500).json({ message: 'Erreur lors de la récupération des événements' });
-  }
-};
-
-// Récupérer un événement par ID et générer un lien partageable.
-export const getEvenementById = async (req, res) => {
-  try {
-    const evenement = await Evenement.findByPk(req.params.id);
-
-    if (!evenement) return res.status(404).json({ message: 'Événement non trouvé' });
-
-    // Générer un lien partageable.
-    const shareableLink = `http://localhost:${process.env.PORT}/api/evenements/${evenement.id}`;
-    
-    res.json({ ...evenement.toJSON(), shareableLink });
-  } catch (error) {
-    res.status(500).json({ message: 'Erreur lors de la récupération de l\'événement' });
-  }
-};
-
-// Mettre à jour un événement par ID (requiert authentification).
-export const updateEvenementById = async (req, res) => {
-  const { nom, date, description, lieu } = req.body;
-
-  try {
-    const [updated] = await Evenement.update(
-      { nom, date, description, lieu },
-      { where: { id: req.params.id } }
-    );
-
-    if (!updated) return res.status(404).json({ message: 'Événement non trouvé' });
-
-    const updatedEvenement = await Evenement.findByPk(req.params.id);
-    
-    res.json(updatedEvenement);
-  } catch (error) {
-    res.status(500).json({ message: 'Erreur lors de la mise à jour de l\'événement' });
-  }
-};
-
-// Supprimer un événement par ID (requiert authentification).
-export const deleteEvenementById = async (req,res) => {
-  try {
-    await Evenement.destroy({
-      where: { id: req.params.id }
-    });
-    res.sendStatus(204);
-  } catch (error) {
-    res.status(500).json({ message: 'Erreur lors de la suppression de l\'événement' });
+    res.status(500).json({ message: 'Erreur lors de la connexion' });
   }
 };
