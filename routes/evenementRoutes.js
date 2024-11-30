@@ -12,7 +12,7 @@ import authMiddleware from '../middleware/auth.js';
 const router = express.Router();
 
 // Routes pour les événements
-router.post('/', authMiddleware, validateEvenement, createEvenement);
+router.post('/', validateEvenement, createEvenement);
 router.get('/', getAllEvenements);
 router.get('/:id', getEvenementById);
 router.put('/:id', authMiddleware, validateEvenement, updateEvenementById);

@@ -1,5 +1,4 @@
-
-import nodemailer from 'nodemailer';
+import nodemailer from 'nodemailer'; 
 import Evenement from '../models/evenement.js';
 import { Op } from 'sequelize';
 import { body, validationResult } from 'express-validator';
@@ -33,7 +32,13 @@ export const createEvenement = async (req, res) => {
   }
 
   try {
+    // Créer l'événement dans la base de données
     const evenement = await Evenement.create({ nom, date, description, lieu });
+
+    // Vérifier si l'utilisateur est authentifié et a un email
+    if (!req.user || !req.user.email) {
+      return res.status(400).json({ message: "Utilisateur non authentifié ou email manquant." });
+    }
 
     // Envoyer un e-mail à l'utilisateur
     await transporter.sendMail({
@@ -43,6 +48,7 @@ export const createEvenement = async (req, res) => {
       text: `L'événement "${nom}" a été créé avec succès.`,
     });
 
+    // Répondre avec l'événement créé
     res.status(201).json(evenement);
   } catch (error) {
     console.error('Erreur lors de la création de l\'événement:', error);
