@@ -1,5 +1,5 @@
 import { DataTypes } from 'sequelize';
-import sequelize from '../config/db';
+import sequelize from '../config/db.js';
 
 const Evenement = sequelize.define('Evenement', {
   nom: {
@@ -18,8 +18,16 @@ const Evenement = sequelize.define('Evenement', {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  createur_id: { // Ajout du champ pour le créateur
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: 'Utilisateur', // Nom de la table des utilisateurs
+      key: 'id',
+    }
+  }
 }, {
-  timestamps: true,
+  timestamps: true, // Ajoute createdAt et updatedAt
 });
 
 export default Evenement;
