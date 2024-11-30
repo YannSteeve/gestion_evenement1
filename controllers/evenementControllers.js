@@ -29,12 +29,14 @@ export const getAllEvenements = async (req, res) => {
 
   const where = {};
   
+  // Filtrage par nom
   if (nom) {
-    where.nom = { [Op.like]: `%${nom}%` }; // Filtrage par nom.
+    where.nom = { [Op.like]: `%${nom}%` }; // Utilisation d'un opérateur LIKE pour la recherche partielle.
   }
   
+  // Filtrage par date
   if (date) {
-    where.date = date; // Filtrage par date.
+    where.date = date; // Filtrage exact par date.
   }
 
   try {
