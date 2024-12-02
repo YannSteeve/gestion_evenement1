@@ -14,13 +14,13 @@ const transporter = nodemailer.createTransport({
   }, 
 });
 
-// Middleware de validation 
+/* Middleware de validation 
 export const validateEvenement = [ 
   body('nom').notEmpty().withMessage('Le nom est requis.'), 
   body('date').isDate().withMessage('La date doit être valide.'), 
   body('description').optional().isString(), 
   body('lieu').optional().isString(), 
-];
+];*/
 
 // Créer un nouvel événement 
 export const createEvenement = async (req, res) => { 

@@ -5,7 +5,6 @@ import {
   getEvenementById,
   updateEvenementById,
   deleteEvenementById,
-  validateEvenement
 } from '../controllers/evenementControllers.js';
 import authMiddleware from '../middleware/auth.js';
 
