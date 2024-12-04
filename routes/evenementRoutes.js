@@ -1,12 +1,11 @@
 import express from 'express';
 import {
-  createEvenement,
-  getAllEvenements,
-  getEvenementById,
-  updateEvenementById,
-  deleteEvenementById,
+   createEvenement,
+   getAllEvenements,
+   getEvenementById,
+   updateEvenementById,
+   deleteEvenementById,
 } from '../controllers/evenementControllers.js';
-import authMiddleware from '../middleware/auth.js';
 
 const router = express.Router();
 

@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { validationResult } from 'express-validator';
 
+
 // Inscription d'un nouvel utilisateur
 export const inscription = async (req, res) => {
   const { nom, email, mot_de_passe } = req.body;

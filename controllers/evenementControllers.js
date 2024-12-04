@@ -1,7 +1,6 @@
 import nodemailer from 'nodemailer'; 
 import Evenement from '../models/evenement.js'; 
 import { Op } from 'sequelize'; 
-import { body, validationResult } from 'express-validator'; 
 
 // Configuration de Nodemailer 
 const transporter = nodemailer.createTransport({ 
@@ -14,22 +13,9 @@ const transporter = nodemailer.createTransport({
   }, 
 });
 
-/* Middleware de validation 
-export const validateEvenement = [ 
-  body('nom').notEmpty().withMessage('Le nom est requis.'), 
-  body('date').isDate().withMessage('La date doit être valide.'), 
-  body('description').optional().isString(), 
-  body('lieu').optional().isString(), 
-];*/
-
 // Créer un nouvel événement 
 export const createEvenement = async (req, res) => { 
   const { nom, date, description, lieu } = req.body; 
-
-  const errors = validationResult(req); 
-  if (!errors.isEmpty()) { 
-    return res.status(400).json({ errors: errors.array() }); 
-  }
 
   try { 
     // Créer l'événement dans la base de données 
@@ -99,11 +85,6 @@ export const getEvenementById = async (req, res) => {
 // Mettre à jour un événement par ID
 export const updateEvenementById = async (req, res) => {  
   const { nom, date, description, lieu } = req.body; 
-
-  const errors = validationResult(req);  
-  if (!errors.isEmpty()) {  
-    return res.status(400).json({ errors: errors.array() });  
-  }
 
   try {  
     const [updated] = await Evenement.update(  
