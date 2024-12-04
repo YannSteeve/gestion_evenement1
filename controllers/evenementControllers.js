@@ -82,42 +82,55 @@ export const getEvenementById = async (req, res) => {
   } 
 };
 
-// Mettre à jour un événement par ID
-export const updateEvenementById = async (req, res) => {  
-  const { nom, date, description, lieu } = req.body; 
+// Fonction pour mettre à jour un événement par ID
+export const updateEvenementById = async (req, res) => {
+  // Récupération des données du corps de la requête
+  const { nom, date, description, lieu } = req.body;
 
-  try {  
-    const [updated] = await Evenement.update(  
-      { nom, date, description, lieu },  
-      { where: { id: req.params.id } }  
+  try {
+    // Mise à jour de l'événement dans la base de données
+    const [updated] = await Evenement.update(
+      { nom, date, description, lieu },
+      { where: { id: req.params.id } }
     );
 
-    if (!updated) {  
-      return res.status(404).json({ message: 'Événement non trouvé' });  
+    // Vérification si l'événement a été trouvé et mis à jour
+    if (!updated) {
+      return res.status(404).json({ message: 'Événement non trouvé' });
     }
 
-    const updatedEvenement = await Evenement.findByPk(req.params.id);  
-    res.json(updatedEvenement);  
+    // Récupération de l'événement mis à jour
+    const updatedEvenement = await Evenement.findByPk(req.params.id);
+    
+    // Réponse avec l'événement mis à jour
+    res.json(updatedEvenement);
 
-  } catch (error) {  
-    console.error('Erreur lors de la mise à jour de l\'événement:', error); // Log des erreurs
-    res.status(500).json({ message: 'Erreur lors de la mise à jour de l\'événement' });  
-  }  
-};
+  } catch (error) {
+    // Gestion des erreurs
+    console.error('Erreur lors de la mise à jour de l\'événement:', error);
+    res.status(500).json({ message: 'Erreur lors de la mise à jour de l\'événement' });
+  }
+}
 
-// Supprimer un événement par ID
-export const deleteEvenementById = async (req, res) => {  
-  try {  
-    const deleted = await Evenement.destroy({ where: { id: req.params.id } });  
+// Fonction pour supprimer un événement par ID
+export const deleteEvenementById = async (req, res) => {
+  try {
+    // Suppression de l'événement dans la base de données
+    const deleted = await Evenement.destroy({
+      where: { id: req.params.id }
+    });
 
-    if (!deleted) {  
-      return res.status(404).json({ message: 'Événement non trouvé' });  
+    // Vérification si l'événement a été trouvé et supprimé
+    if (!deleted) {
+      return res.status(404).json({ message: 'Événement non trouvé' });
     }
 
-    res.sendStatus(204);  
+    // Envoi d'un statut 204 No Content pour indiquer une suppression réussie
+    res.sendStatus(204);
 
-  } catch (error) {  
-    console.error('Erreur lors de la suppression de l\'événement:', error); // Log des erreurs
-    res.status(500).json({ message: 'Erreur lors de la suppression de l\'événement' });  
-  }  
-};
+  } catch (error) {
+    // Gestion des erreurs
+    console.error('Erreur lors de la suppression de l\'événement:', error);
+    res.status(500).json({ message: 'Erreur lors de la suppression de l\'événement' });
+  }
+}
