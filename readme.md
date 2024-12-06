@@ -27,7 +27,6 @@ BASE_URL=http://localhost:9500
 2. **Installation**
 ```bash
 npm install
-node sync-db.js
 npm start
 ```
 
