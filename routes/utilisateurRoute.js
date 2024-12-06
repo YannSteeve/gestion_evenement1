@@ -1,5 +1,5 @@
 import express from 'express';
-import { inscription, login } from '../controllers/utilisateurController.js';
+import { inscription, login, logout } from '../controllers/utilisateurController.js';
 
 const router = express.Router();
 
@@ -9,5 +9,7 @@ router.post('/inscription', inscription);
 // Authentification d'un utilisateur.
 router.post('/login', login);
 
-export default router;
+// Déconnexion d'un utilisateur.
+router.post('/logout', logout); // Corrigé ici pour utiliser logout
 
+export default router;
