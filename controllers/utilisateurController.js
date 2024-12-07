@@ -1,4 +1,4 @@
-import Utilisateur from '../models/Utilisateur.js';
+import Utilisateur from '../models/utilisateur.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { validationResult } from 'express-validator';
