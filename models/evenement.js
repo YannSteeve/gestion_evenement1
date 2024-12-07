@@ -1,37 +1,36 @@
-// Import de Sequelize pour créer notre modèle
 import { DataTypes } from 'sequelize';
 import sequelize from '../config/db.js';
 
 // Définition du modèle Evenement
 const Evenement = sequelize.define('Evenement', {
-  // Titre de l'événement (obligatoire)
+  
   titre: {
-    type: DataTypes.STRING(100), // Maximum 100 caractères
-    allowNull: false, // Champ obligatoire
+    type: DataTypes.STRING(100),
+    allowNull: false,
     validate: {
       notEmpty: { msg: 'Le titre est obligatoire' }
     }
   },
 
-  // Date de l'événement (obligatoire)
+  
   date: {
-    type: DataTypes.DATEONLY, // Format: YYYY-MM-DD
+    type: DataTypes.DATEONLY,
     allowNull: false,
     validate: {
       isDate: { msg: 'Format de date invalide' }
     }
   },
 
-  // Heure de l'événement (obligatoire)
+  
   heure: {
-    type: DataTypes.TIME, // Format: HH:mm:ss
+    type: DataTypes.TIME,
     allowNull: false
   },
 
-  // Type d'événement (avec liste prédéfinie)
+  
   type: {
     type: DataTypes.ENUM('Conference', 'Seminaire', 'Atelier', 'Formation', 'Social', 'Autre'),
-    defaultValue: 'Autre', // Valeur par défaut
+    defaultValue: 'Autre',
     allowNull: false
   },
 
@@ -51,7 +50,7 @@ const Evenement = sequelize.define('Evenement', {
   capaciteMax: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    defaultValue: 50, // Par défaut : 50 personnes
+    defaultValue: 50,
     validate: {
       min: { args: [1], msg: 'La capacité doit être d\'au moins 1 personne' },
       max: { args: [1000], msg: 'La capacité ne peut pas dépasser 1000 personnes' }
